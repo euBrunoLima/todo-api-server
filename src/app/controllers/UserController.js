@@ -56,6 +56,10 @@ class UserController{
         if (!name || !email || !password) {
             return res.status(400).json({ mensagem: 'Todos os campos são obrigatórios.' });
         }
+        if(password.length < 6){
+            return res.status(400).json({ mensagem: 'A senha deve conter no minimo 6 caracteres' });
+
+        }
         const verificaEmail =  await UserRepository.findByEmail(email)
 
         if(verificaEmail){
@@ -65,13 +69,26 @@ class UserController{
         try{
             const senhaCriptografada = await bcrypt.hash(password, 10)
 
-            await UserRepository.create({
+            const user = {
                 name,
                 email,
                 password: senhaCriptografada
+            }
+            const resultado = await UserRepository.create(user)
+            
+             if(!resultado || resultado.affectedRows === 0){
+                return res.status(500).json({mensagem: 'Não foi possivel criar a tarefa.'})
+            }
+
+            return res.status(201).json({
+                mensagem: 'Usuario criado com sucesso!',
+                user:{
+                    id: resultado.insertId,
+                    name: user.name,
+                    email: user.email
+                }
             })
 
-            return res.status(201).json({ mensagem: 'Usuário cadastrado com sucesso!' })
         }catch(erro){
             console.error(erro);
             return res.status(500).json({ mensagem: 'Erro ao cadastrar usuário.' });
