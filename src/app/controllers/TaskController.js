@@ -4,10 +4,9 @@ import CategoryRepository from '../repositories/CategoryRepository.js';
 class TasksController{
 
     async create(req, res) {
-        const {title, description = '', category_id = 1} = req.body;
+        const {title, description = '', category_id = 1, deadlineDate = null, deadlineTime = null} = req.body;
         const user_id = req.usuario.id;
 
-        
         if (!title) {
             return res.status(400).json({ mensagem: 'Título é obrigatório.' });
         }
@@ -16,16 +15,20 @@ class TasksController{
         }
 
         const categoria = await CategoryRepository.findById(category_id);
-            if (!categoria || (categoria.user_id !== null && categoria.user_id !== user_id)) {
-                return res.status(403).json({ mensagem: 'Categoria inválida ou não permitida.' });
-            }
+
+        if (!categoria || (categoria.user_id !== null && categoria.user_id !== user_id)) {
+            return res.status(403).json({ mensagem: 'Categoria inválida ou não permitida.' });
+        }
+        
         try {
 
             const resultado = await TaskRepository.create({
                 title,
                 description,
                 category_id,
-                user_id
+                user_id,
+                deadlineDate,
+                deadlineTime
             });
 
             if(!resultado || resultado.affectedRows === 0){
