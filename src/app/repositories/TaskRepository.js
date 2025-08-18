@@ -3,8 +3,18 @@ import conexao from '../../database/conexao.js';
 class TasksRepository{
 
     create(task) {
-        const sql = 'insert into tasks (title, description, category_id, user_id) values (?,?,?,?);'
-        const valores = [task.title, task.description, task.category_id, task.user_id];
+        const sql = `
+            INSERT INTO tasks (title, description, category_id, user_id, deadlineDate, deadlineTime) 
+            VALUES (?, ?, ?, ?, ?, ?);
+        `;
+        const valores = [
+            task.title, 
+            task.description || '', 
+            task.category_id || 1, 
+            task.user_id,
+            task.deadlineDate || null,
+            task.deadlineTime || null
+        ];
 
         return new Promise((resolve, reject) => {
             conexao.query(sql, valores, (erro, resultado) => {
@@ -32,7 +42,15 @@ class TasksRepository{
         })
 
     }
-
+    readByCategory(category_id, user_id) {
+        const sql = 'select * from tasks where category_id = ? and user_id = ?;'
+        return new Promise((resolve, reject) => {
+            conexao.query(sql, [category_id, user_id], (erro, resultado) => {
+                if(erro) return reject(erro)
+                return resolve(resultado)
+            })
+        })
+    }
     update(dadosAtualizados, id, user_id) {
         const sql = 'update tasks set ? where id = ? and user_id = ?;'
         
@@ -43,7 +61,7 @@ class TasksRepository{
             })
         })
     }
-    updateStatus(id, user_id, status) {
+        updateStatus(id, user_id, status) { 
         const sql = 'UPDATE tasks SET status = ? WHERE id = ? AND user_id = ?';
         return new Promise((resolve, reject) => {
             conexao.query(sql, [status, id, user_id], (erro, resultado) => {
