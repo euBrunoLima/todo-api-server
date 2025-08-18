@@ -18,7 +18,7 @@ routes.patch('/user/pass/:id', autenticarToken, UserController.updatePassword);
 //Rotas das Tasks
 routes.post('/task', autenticarToken, TaskController.create);
 routes.get('/tasks/show', autenticarToken, TaskController.readAll);
-routes.get('/tasks/show/:id', autenticarToken, TaskController.readById);
+routes.get('/tasks/:id/show', autenticarToken, TaskController.readById);
 routes.patch('/tasks/update/:id', autenticarToken, TaskController.update);
 routes.patch('/tasks/status/:id', autenticarToken, TaskController.updateStatus);
 routes.patch('/tasks/category/:id', autenticarToken, TaskController.updateCategory);
