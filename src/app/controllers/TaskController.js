@@ -102,15 +102,6 @@ class TasksController{
                 return res.status(400).json({ mensagem: 'O titulo é obrigatório.' });
             }
         }
-        // if (!dados_atualizados.category_id){
-        //     dados_atualizados.category_id = 1
-        // }
-        // if('category_id' in dados_atualizados){
-        //     if (!dados_atualizados.category_id || dados_atualizados.category_id == '') {
-        //         return res.status(400).json({ mensagem: 'A Categoria é obrigatória.' });
-        //     }
-            
-        // }
 
         try {
             

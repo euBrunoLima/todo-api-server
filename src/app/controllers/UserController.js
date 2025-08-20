@@ -117,7 +117,7 @@ class UserController{
 
             const verificaEmail =  await UserRepository.findByEmail(dados_atualizados.email.trim())
 
-            if(verificaEmail){
+            if(verificaEmail && verificaEmail.id != id){
                 return res.status(400).json({ mensagem: 'O email informado já está cadastrado' });
             }
             
@@ -134,7 +134,7 @@ class UserController{
             }
 
             return res.status(200).json({
-                mensagem: 'Informações atualizadas com sucesso',
+                mensagem: 'Perfil atualizado com sucesso',
                 dados_atualizados
             });
 
@@ -142,7 +142,7 @@ class UserController{
             console.error(erro);
             return res.status(500).json({ mensagem: 'Erro ao atualizar informações.' });
         }
-         
+            
     }
     async delete(req, res){
         const {id} = req.params;
