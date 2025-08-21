@@ -219,6 +219,24 @@ class TasksController{
         }
 
     }
+    async deleteAll(req, res) {
+        const user_id = req.usuario.id;
+
+        try {
+            const resultado = await TaskRepository.deleteALL(user_id);
+
+            if (!resultado || resultado.affectedRows === 0) {
+                return res.status(404).json({ mensagem: 'Nenhuma tarefa encontrada para este usuário.' });
+            }
+
+            return res.status(200).json({ mensagem: 'Todas as tarefas foram deletadas com sucesso.' });
+
+        } catch (error) {
+            console.error('Erro ao deletar todas as tarefas:', error);
+            return res.status(500).json({ mensagem: 'Erro interno ao deletar todas as tarefas.' });
+        }
+    }
+
 
 }
 
