@@ -1,7 +1,11 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import UserRepository from '../repositories/UserRepository.js';
+import TaskRepository from '../repositories/TaskRepository.js';
+import SubtaskRepository from '../repositories/SubtaskRepository.js';
+
 import dotenv from 'dotenv';
+import CategoryRepository from '../repositories/CategoryRepository.js';
 dotenv.config();
 
 class UserController{
@@ -172,18 +176,36 @@ class UserController{
                 return res.status(401).json({ mensagem: 'Senha incorreta.' });
             }
 
+            try {
+                await SubtaskRepository.deleteByUserId(id);
+            } catch (error) {
+                console.log(error)
+            }
+            try {
+                await TaskRepository.deleteALL(id);
+
+            } catch (error) {
+                console.log(error)
+            }
+            try {
+                await CategoryRepository.deleteALByUser(id);
+            } catch (error) {
+                console.log(error)
+            }
+            
+            
             const resultado = await UserRepository.delete(id);
 
             if (resultado.affectedRows === 0) {
                 return res.status(404).json({ mensagem: 'Usuário não encontrado.' });
             }
 
-            return res.status(200).json({ mensagem: 'Usuario deletado com sucesso' });
+            return res.status(200).json({ mensagem: 'Conta deletada com sucesso' });
             
 
         } catch (error) {
             console.log(error)
-            return res.status(500).json({ mensagem: 'Erro ao atualizar informações.' });
+            return res.status(500).json({ mensagem: 'Erro ao deletar conta.' });
           
         }
     }
