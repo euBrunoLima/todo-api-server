@@ -61,7 +61,7 @@ class TasksRepository{
             })
         })
     }
-        updateStatus(id, user_id, status) { 
+    updateStatus(id, user_id, status) { 
         const sql = 'UPDATE tasks SET status = ? WHERE id = ? AND user_id = ?';
         return new Promise((resolve, reject) => {
             conexao.query(sql, [status, id, user_id], (erro, resultado) => {
@@ -88,6 +88,16 @@ class TasksRepository{
             });
         });
     }
+    deleteALL(user_id){
+        const sql = 'delete from tasks where user_id = ?';
+        return new Promise((resolve, reject) => {
+            conexao.query(sql, [user_id], (erro, resultado) => {
+                if (erro) return reject(erro);
+                return resolve(resultado)
+            })
+        })
+    }
+
 }
 
 export default new TasksRepository();
