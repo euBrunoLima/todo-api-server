@@ -60,6 +60,20 @@ class SubTaskRepository{
             });
         });
     }
+    
+    deleteByUserId(userId) {
+        const sql = `
+            DELETE subtasks FROM subtasks
+            INNER JOIN tasks ON subtasks.task_id = tasks.id
+            WHERE tasks.user_id = ?;
+        `;
+        return new Promise((resolve, reject) => {
+            conexao.query(sql, [userId], (erro, resultado) => {
+                if (erro) return reject(erro);
+                resolve(resultado);
+            });
+        });
+    }
 }
 
 export default new SubTaskRepository();
