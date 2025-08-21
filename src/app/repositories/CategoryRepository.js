@@ -68,6 +68,15 @@ class CategoryRepository{
             });
         });
     }
+    async deleteALByUser(user_id){
+        const sql = `delete from categories where user_id = ?`
+        return new Promise((resolve, reject) => {
+            conexao.query(sql, [user_id], (erro, resultado) => {
+                if (erro) return reject(erro);
+                resolve(resultado);
+            })
+        })
+    }
 
 
 }
