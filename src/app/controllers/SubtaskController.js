@@ -53,9 +53,10 @@ class SubtaskController{
 
             const resultado = await SubtaskRepository.findAllByTaskId(taskId);
 
-            if(!resultado || resultado.length == 0){
-                return res.status(404).json({ mensagem: 'Nenhuma sub-tarefa encontrada para esta tarefa.' });
-            }
+            return res.status(200).json({
+                mensagem: resultado.length > 0 ? 'sub-tarefas encontradas com sucesso' : 'Nenhuma sub-tarefa encontrada',
+                dados: resultado || []
+            });
 
             return res.status(200).json({ mensagem: 'sub-tarefas encontradas com sucesso', dados: resultado });
 
