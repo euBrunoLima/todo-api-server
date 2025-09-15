@@ -1,5 +1,6 @@
 import TaskRepository from '../repositories/TaskRepository.js';
 import CategoryRepository from '../repositories/CategoryRepository.js';
+import SubtaskRepository from '../repositories/SubtaskRepository.js';
 
 class TasksController{
 
@@ -205,6 +206,14 @@ class TasksController{
         }
 
         try {
+
+            try {
+                await SubtaskRepository.deleteByUserId(user_id)
+            } catch (error) {
+                console.log(error)
+                return
+            }
+
             const resultado = await TaskRepository.delete(id, user_id);
 
             if(!resultado || resultado.affectedRows === 0){
@@ -236,7 +245,6 @@ class TasksController{
             return res.status(500).json({ mensagem: 'Erro interno ao deletar todas as tarefas.' });
         }
     }
-
 
 }
 
