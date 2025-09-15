@@ -22,9 +22,25 @@ class CategoryRepository{
         });
     }       
     async findAllByUser(user_id) {
-        const sql = `SELECT * FROM categories WHERE user_id = ? OR user_id IS NULL ORDER BY name;`;
+        const sql = `
+            SELECT 
+                c.id,
+                c.name,
+                c.user_id,
+                COALESCE(t.qtd, 0) AS qtd
+            FROM categories c
+            LEFT JOIN (
+                SELECT category_id, COUNT(*) AS qtd
+                FROM tasks
+                WHERE user_id = ?
+                GROUP BY category_id
+            ) t ON t.category_id = c.id
+            WHERE c.user_id = ? OR c.user_id IS NULL
+           ORDER BY CASE WHEN c.user_id IS NOT NULL THEN 1 ELSE 0 END DESC, c.name;
+        `;
+
         return new Promise((resolve, reject) => {
-            conexao.query(sql, [user_id], (erro, resultado) => {
+            conexao.query(sql, [user_id, user_id], (erro, resultado) => {
                 if (erro) return reject(erro);
                 resolve(resultado);
             });
